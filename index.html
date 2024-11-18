@@ -9,9 +9,10 @@
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background: #0d1117;
+            background: transparent; /* Make background transparent */
             color: #f0f6fc;
             line-height: 1.6;
+            overflow: hidden; /* Prevent scrolling */
         }
 
         /* Video background styling */
@@ -19,57 +20,49 @@
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensure video covers the screen */
             z-index: -1; /* Place the video behind the content */
         }
 
         header {
-            background: linear-gradient(90deg, #f53844, #42378f);
+            background: transparent; /* Make header transparent */
             color: white;
             padding: 1rem 2rem;
             text-align: center;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1; /* Ensure header stays above video */
         }
         header h1 {
-            font-size: 3rem;
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff9900; /* Bitcoin Dog themed orange */
         }
         header p {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            color: #fff; /* White text for better contrast */
         }
 
-        /* Section Styles */
+        /* Main Content */
         .container {
             max-width: 1200px;
-            margin: auto;
+            margin: 0 auto;
             padding: 2rem;
-        }
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        .feature {
-            background: #161b22;
-            border-radius: 10px;
-            padding: 1.5rem;
+            z-index: 1; /* Keep container above video */
+            position: relative;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        .feature img {
-            max-width: 100px;
-            margin-bottom: 1rem;
-        }
-        .feature h3 {
-            color: #58a6ff;
         }
 
         /* Call to Action */
         .cta {
-            text-align: center;
-            margin: 3rem 0;
+            margin-top: 2rem;
         }
         .cta button {
-            background: #f53844;
+            background: #ff9900; /* Bitcoin Dog themed orange */
             color: white;
             border: none;
             border-radius: 5px;
@@ -79,16 +72,29 @@
             transition: background 0.3s ease;
         }
         .cta button:hover {
-            background: #d63031;
+            background: #d87c00; /* Darker orange for hover effect */
         }
 
         /* Footer */
         footer {
-            background: #161b22;
+            background: transparent;
             padding: 1rem 2rem;
             text-align: center;
             color: #8b949e;
             font-size: 0.9rem;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        /* Image styling */
+        .logo {
+            max-width: 250px;
+            margin: 0 auto;
+            display: block;
+            margin-bottom: 20px; /* Add some space between logo and text */
         }
     </style>
 </head>
@@ -99,44 +105,27 @@
         Your browser does not support the video tag.
     </video>
 
+    <!-- Header Section -->
     <header>
-        <h1>🚀 FUEL</h1>
+        <img src="https://via.placeholder.com/250" alt="Bitcoin Dog Logo" class="logo"> <!-- Replace with your Bitcoin Dog logo -->
+        <h1>🚀 BITDOG</h1>
         <p>The Meme Coin That Powers Your FOMO!</p>
     </header>
 
     <main class="container">
-        <!-- Features Section -->
-        <section class="features">
-            <div class="feature">
-                <img src="https://via.placeholder.com/100" alt="Feature 1">
-                <h3>FOMO Engine</h3>
-                <p>Fuel the hype with every transaction! Burn mechanics and rewards drive the community forward.</p>
-            </div>
-            <div class="feature">
-                <img src="https://via.placeholder.com/100" alt="Feature 2">
-                <h3>Moon Ready</h3>
-                <p>Designed to take off. Join the rocket as we aim for the moon and beyond!</p>
-            </div>
-            <div class="feature">
-                <img src="https://via.placeholder.com/100" alt="Feature 3">
-                <h3>Community Driven</h3>
-                <p>Your memes, your voice, your moonshot. FUEL is powered by YOU.</p>
-            </div>
-        </section>
-
         <!-- Call to Action -->
         <div class="cta">
-            <button id="buyButton">🔥 Where to Buy $FUEL</button>
+            <button id="buyButton">🔥 Where to Buy BITDOG</button>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2024 FUEL Coin | Fueled by Memes</p>
+        <p>&copy; 2024 BITDOG Coin | Fueled by Memes</p>
     </footer>
 
     <script>
         document.getElementById('buyButton').addEventListener('click', () => {
-            alert('Link coming soon! Stay hyped for $FUEL!');
+            alert('Link coming soon! Stay hyped for BITDOG!');
         });
     </script>
 </body>
