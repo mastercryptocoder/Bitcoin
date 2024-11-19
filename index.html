@@ -95,7 +95,7 @@
 
                 if (factsForYear.length > 0) {
                     // Show the first matching fact for the year
-                    const fact = factsForYear[Math.floor(Math.random() * factsForYear.length-1)];
+                    const fact = factsForYear[Math.floor(Math.random() * factsForYear.length)];
                     output.innerHTML = `
                         <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
                         <br><a href="${fact.pages[0]?.content_urls.desktop.page}" target="_blank">Learn more</a>`;
