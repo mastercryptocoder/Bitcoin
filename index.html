@@ -72,27 +72,47 @@
 
             const [year, month, day] = dateInput.split("-");
 
-            // Fix the URL template string (use backticks for string interpolation)
-            const apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
+            // Try fetching events for the given year and date
+            let apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
+            let eventData = null;
 
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (data.events && data.events.length > 0) {
-                    // Get a random event for the date
-                    const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
-                    const eventYear = randomEvent.year;
-                    const description = randomEvent.text;
-
-                    // Display the fact
-                    output.innerHTML = `<strong>${eventYear}:</strong> ${description}`;
-                } else {
-                    output.textContent = "No significant events found for this date. Try another!";
+                    // If there are events for this date, show a random event
+                    eventData = data.events[Math.floor(Math.random() * data.events.length)];
                 }
             } catch (error) {
-                output.textContent = "Error fetching data. Please try again later.";
-                console.error(error);
+                console.error('Error fetching events:', error);
+            }
+
+            // If no events were found for the specific date, show a fallback message
+            if (eventData) {
+                const eventYear = eventData.year;
+                const description = eventData.text;
+                output.innerHTML = `<strong>${eventYear}:</strong> ${description}`;
+            } else {
+                // Now, fetch a random event for the date (no year specified)
+                apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
+                try {
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+
+                    if (data.events && data.events.length > 0) {
+                        // Get a random event from the list
+                        const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
+                        const eventYear = randomEvent.year;
+                        const description = randomEvent.text;
+                        output.innerHTML = `<strong>Random Event for ${month}/${day}:</strong> ${description}`;
+                    } else {
+                        output.textContent = "No significant events found for this date. Try another!";
+                    }
+                } catch (error) {
+                    output.textContent = "Error fetching data. Please try again later.";
+                    console.error(error);
+                }
             }
 
             // Randomize animation colors
@@ -105,3 +125,4 @@
     </script>
 </body>
 </html>
+
