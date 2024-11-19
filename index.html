@@ -71,7 +71,9 @@
             }
 
             const [year, month, day] = dateInput.split("-");
-            const apiUrl = 'https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}';
+
+            // Fix the URL template string (use backticks for string interpolation)
+            const apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
 
             try {
                 const response = await fetch(apiUrl);
@@ -84,7 +86,7 @@
                     const description = randomEvent.text;
 
                     // Display the fact
-                    output.innerHTML = <strong>${eventYear}:</strong> ${description};
+                    output.innerHTML = `<strong>${eventYear}:</strong> ${description}`;
                 } else {
                     output.textContent = "No significant events found for this date. Try another!";
                 }
@@ -98,10 +100,8 @@
                 "#ff7eb3", "#ff758c", "#f24e79", "#ffc078", "#85e3ff", "#b9fbc0", "#f9c74f"
             ];
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            animation.style.background = 'linear-gradient(45deg, ${randomColor}, ${randomColor})';
+            animation.style.background = `linear-gradient(45deg, ${randomColor}, ${randomColor})`;
         }
     </script>
 </body>
 </html>
- 
- 
