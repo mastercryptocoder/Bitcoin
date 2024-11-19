@@ -60,7 +60,7 @@
     <div id="animation" class="animation"></div>
 
     <script>
-        async function generateFact() {
+       async function generateFact() {
             const dateInput = document.getElementById('dateInput').value; // YYYY-MM-DD format
             const output = document.getElementById('output');
             const animation = document.getElementById('animation');
@@ -80,25 +80,32 @@
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                if (data && data.selected) {
-                    // Filter events by the exact year entered by the user
-                    const eventsForYear = data.selected.filter(event => parseInt(event.year) === parseInt(year));
-                    
-                    if (eventsForYear.length > 0) {
-                        const event = eventsForYear[0]; // Display the first matching event
-                        output.innerHTML = `
-                            <strong>${event.year}:</strong> ${event.text}
-                            <br><a href="${event.pages[0].content_urls.desktop.page}" target="_blank">Learn more</a>`;
-                    } else {
-                        // If no year-specific event, choose a random event
-                        const randomEvent = data.selected[Math.floor(Math.random() * data.selected.length)];
-                        output.innerHTML = `
-                            <strong>${randomEvent.year}:</strong> ${randomEvent.text}
-                            <br><a href="${randomEvent.pages[0].content_urls.desktop.page}" target="_blank">Learn more</a>
-                            <p>(No specific events found for ${year}. Here's a random one from this date!)</p>`;
+                // Combine all relevant fields into one array
+                const allCategories = ['events', 'births', 'deaths', 'holidays', 'selected'];
+                let allFacts = [];
+
+                allCategories.forEach(category => {
+                    if (data[category] && data[category].length > 0) {
+                        allFacts = allFacts.concat(data[category].map(item => ({ ...item, category })));
                     }
+                });
+
+                // Filter facts by the specified year
+                const factsForYear = allFacts.filter(fact => fact.year && parseInt(fact.year) === parseInt(year));
+
+                if (factsForYear.length > 0) {
+                    // Show the first matching fact for the year
+                    const fact = factsForYear[0];
+                    output.innerHTML = `
+                        <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
+                        <br><a href="${fact.pages[0]?.content_urls.desktop.page}" target="_blank">Learn more</a>`;
                 } else {
-                    output.textContent = `No significant events found for ${month}/${day}, ${year}.`;
+                    // If no year-specific fact is found, show a random fact
+                    const randomFact = allFacts[Math.floor(Math.random() * allFacts.length)];
+                    output.innerHTML = `
+                        <strong>${randomFact.year} (${randomFact.category}):</strong> ${randomFact.text}
+                        <br><a href="${randomFact.pages[0]?.content_urls.desktop.page}" target="_blank">Learn more
+                        <p>(No specific events found for ${year}. Here's a random one from this date!)</p>`;
                 }
             } catch (error) {
                 output.textContent = "Error fetching data. Please try again later.";
@@ -112,6 +119,7 @@
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             animation.style.background = `linear-gradient(45deg, ${randomColor}, ${randomColor})`;
         }
+
 
     </script>
 </body>
