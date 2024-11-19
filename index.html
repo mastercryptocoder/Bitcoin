@@ -96,11 +96,12 @@
                 const factsForYear = allFacts.filter(fact => fact.year && parseInt(fact.year) === parseInt(year));
 
                 if (factsForYear.length > 0) {
-                    // Show the first matching fact for the year
-                    const fact = factsForYear[0];
-                    output.innerHTML = `
-                        <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
-                        <br><a href="${fact.pages?.[0]?.content_urls?.desktop?.page || '#'}" target="_blank">Learn more</a>`;
+            // Display all matching facts for the year
+            output.innerHTML = factsForYear.map(fact => `
+                <div>
+                    <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
+                </div>
+            `).join('<hr>');
                 } else if (allFacts.length > 0) {
                     // If no year-specific fact, show a random fact
                     const randomFact = allFacts[Math.floor(Math.random() * allFacts.length)];
