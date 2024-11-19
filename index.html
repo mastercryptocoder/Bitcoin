@@ -3,130 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FUEL - The Meme Coin That Powers FOMO</title>
+    <title>Time Portal</title>
     <style>
-        /* Global Styles */
         body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            background: transparent; /* Make background transparent */
-            color: #f0f6fc;
-            line-height: 1.6;
-            overflow: hidden; /* Prevent scrolling */
-        }
-
-        /* Video background styling */
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensure video covers the screen */
-            z-index: -1; /* Place the video behind the content */
-        }
-
-        header {
-            background: transparent; /* Make header transparent */
-            color: white;
-            padding: 1rem 2rem;
+            font-family: Arial, sans-serif;
             text-align: center;
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1; /* Ensure header stays above video */
+            background-color: #f0f8ff;
+            color: #333;
+            padding: 20px;
         }
-        header h1 {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #ff9900; /* Bitcoin Dog themed orange */
-        }
-        header p {
-            font-size: 1.5rem;
-            color: #fff; /* White text for better contrast */
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            z-index: 1; /* Keep container above video */
-            position: relative;
-            text-align: center;
-        }
-
-        /* Call to Action */
-        .cta {
-            margin-top: 2rem;
-        }
-        .cta button {
-            background: #ff9900; /* Bitcoin Dog themed orange */
-            color: white;
-            border: none;
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 1rem;
+            border: 2px solid #0078d7;
             border-radius: 5px;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
+        }
+        button {
+            background-color: #0078d7;
+            color: white;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
-        .cta button:hover {
-            background: #d87c00; /* Darker orange for hover effect */
+        button:hover {
+            background-color: #005cbf;
         }
-
-        /* Footer */
-        footer {
-            background: transparent;
-            padding: 1rem 2rem;
-            text-align: center;
-            color: #8b949e;
-            font-size: 0.9rem;
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
         }
-
-        /* Image styling */
-        .logo {
-            max-width: 250px;
-            margin: 0 auto;
-            display: block;
-            margin-bottom: 20px; /* Add some space between logo and text */
+        .animation {
+            margin: 20px auto;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff7eb3, #ff758c, #f24e79);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Video Background -->
-    <video class="video-background" autoplay loop muted>
-        <source src="have_the_camera_circle_the_dog_68eb73.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
-    <!-- Header Section -->
-    <header>
-        <img src="https://via.placeholder.com/250" alt="Bitcoin Dog Logo" class="logo"> <!-- Replace with your Bitcoin Dog logo -->
-        <h1>🚀 BITDOG</h1>
-        <p>The Meme Coin That Powers Your FOMO!</p>
-    </header>
-
-    <main class="container">
-        <!-- Call to Action -->
-        <div class="cta">
-            <button id="buyButton">🔥 Where to Buy BITDOG</button>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 BITDOG Coin | Fueled by Memes</p>
-    </footer>
+    <h1>Time Portal</h1>
+    <p>Enter a date to discover something unique!</p>
+    <input type="date" id="dateInput">
+    <button onclick="generateFact()">See What Happens</button>
+    <div id="output" class="result"></div>
+    <div id="animation" class="animation"></div>
 
     <script>
-        document.getElementById('buyButton').addEventListener('click', () => {
-            alert('Link coming soon! Stay hyped for BITDOG!');
-        });
+        async function generateFact() {
+            const dateInput = document.getElementById('dateInput').value;
+            const output = document.getElementById('output');
+            const animation = document.getElementById('animation');
+
+            if (!dateInput) {
+                output.textContent = "Please enter a valid date!";
+                return;
+            }
+
+            const [year, month, day] = dateInput.split("-");
+            const apiUrl = https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day};
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.events && data.events.length > 0) {
+                    // Get a random event for the date
+                    const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
+                    const eventYear = randomEvent.year;
+                    const description = randomEvent.text;
+
+                    // Display the fact
+                    output.innerHTML = <strong>${eventYear}:</strong> ${description};
+                } else {
+                    output.textContent = "No significant events found for this date. Try another!";
+                }
+            } catch (error) {
+                output.textContent = "Error fetching data. Please try again later.";
+                console.error(error);
+            }
+
+            // Randomize animation colors
+            const colors = [
+                "#ff7eb3", "#ff758c", "#f24e79", "#ffc078", "#85e3ff", "#b9fbc0", "#f9c74f"
+            ];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            animation.style.background = linear-gradient(45deg, ${randomColor}, ${randomColor});
+        }
     </script>
 </body>
 </html>
+ 
+ 
