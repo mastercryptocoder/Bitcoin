@@ -61,7 +61,7 @@
 
     <script>
        async function generateFact() {
-            const dateInput = document.getElementById('dateInput').value;
+            const dateInput = document.getElementById('dateInput').value; // YYYY-MM-DD format
             const output = document.getElementById('output');
             const animation = document.getElementById('animation');
 
@@ -70,29 +70,40 @@
                 return;
             }
 
+            // Extract year, month, and day from the input
             const [year, month, day] = dateInput.split("-");
-            const apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
 
+            // Map of month names to numbers
+            const monthMap = {
+                "January": 1, "February": 2, "March": 3, "April": 4, "May": 5,
+                "June": 6, "July": 7, "August": 8, "September": 9,
+                "October": 10, "November": 11, "December": 12
+            };
+
+            // Find the name of the month (if needed for advanced use cases)
+            const monthName = Object.keys(monthMap).find(key => monthMap[key] == parseInt(month));
+
+            // Query the Wikipedia API
+            const apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (data.events && data.events.length > 0) {
-                    // Filter events to match the input year
+                    // Find events that match the input date or return a random event
                     const eventsForYear = data.events.filter(event => event.year == year);
+                    const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
 
+                    // Output a year-specific event if available, otherwise show a random event
                     if (eventsForYear.length > 0) {
-                        // Show the first matching event for the year
                         const event = eventsForYear[0];
                         output.innerHTML = `<strong>${event.year}:</strong> ${event.text}`;
                     } else {
-                        // If no events match the year, show general events
-                        const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
-                        output.innerHTML = `<strong>${randomEvent.year}:</strong> ${randomEvent.text}`;
-                        output.innerHTML += `<p>(No specific events found for ${year}. Here's a random one from this date!)</p>`;
+                        output.innerHTML = `<strong>${randomEvent.year}:</strong> ${randomEvent.text} 
+                            <p>(No specific events found for ${year}. Here's a random one from this date!)</p>`;
                     }
                 } else {
-                    output.textContent = "No significant events found for this date. Try another!";
+                    output.textContent = `No significant events found for ${monthName} ${day}, ${year}.`;
                 }
             } catch (error) {
                 output.textContent = "Error fetching data. Please try again later.";
@@ -106,6 +117,7 @@
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             animation.style.background = `linear-gradient(45deg, ${randomColor}, ${randomColor})`;
         }
+
 
     </script>
 </body>
