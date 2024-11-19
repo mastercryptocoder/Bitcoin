@@ -82,8 +82,8 @@
 
                 if (data && data.selected) {
                     // Filter events by the exact year entered by the user
-                    const eventsForYear = data.selected.filter(event => event.year == year);
-
+                    const eventsForYear = data.selected.filter(event => parseInt(event.year) === parseInt(year));
+                    
                     if (eventsForYear.length > 0) {
                         const event = eventsForYear[0]; // Display the first matching event
                         output.innerHTML = `
