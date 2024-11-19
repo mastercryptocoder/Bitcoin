@@ -60,7 +60,7 @@
     <div id="animation" class="animation"></div>
 
     <script>
-        async function generateFact() {
+       async function generateFact() {
             const dateInput = document.getElementById('dateInput').value;
             const output = document.getElementById('output');
             const animation = document.getElementById('animation');
@@ -71,8 +71,6 @@
             }
 
             const [year, month, day] = dateInput.split("-");
-
-            // Fetch events for the given month and day
             const apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
 
             try {
@@ -80,15 +78,20 @@
                 const data = await response.json();
 
                 if (data.events && data.events.length > 0) {
-                    // If events are found for this date, show a random event
-                    const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
-                    const eventYear = randomEvent.year;
-                    const description = randomEvent.text;
+                    // Filter events to match the input year
+                    const eventsForYear = data.events.filter(event => event.year == year);
 
-                    // Display the fact
-                    output.innerHTML = `<strong>${eventYear}:</strong> ${description}`;
+                    if (eventsForYear.length > 0) {
+                        // Show the first matching event for the year
+                        const event = eventsForYear[0];
+                        output.innerHTML = `<strong>${event.year}:</strong> ${event.text}`;
+                    } else {
+                        // If no events match the year, show general events
+                        const randomEvent = data.events[Math.floor(Math.random() * data.events.length)];
+                        output.innerHTML = `<strong>${randomEvent.year}:</strong> ${randomEvent.text}`;
+                        output.innerHTML += `<p>(No specific events found for ${year}. Here's a random one from this date!)</p>`;
+                    }
                 } else {
-                    // If no events found for the date, show a fallback message
                     output.textContent = "No significant events found for this date. Try another!";
                 }
             } catch (error) {
@@ -103,6 +106,7 @@
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             animation.style.background = `linear-gradient(45deg, ${randomColor}, ${randomColor})`;
         }
+
     </script>
 </body>
 </html>
