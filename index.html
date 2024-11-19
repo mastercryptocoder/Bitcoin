@@ -84,7 +84,7 @@
             const monthName = Object.keys(monthMap).find(key => monthMap[key] == parseInt(month));
 
             // Query the Wikipedia API
-            const apiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${month}/${day}`;
+            const apiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
