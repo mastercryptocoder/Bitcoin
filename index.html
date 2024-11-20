@@ -8,10 +8,36 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f0f8ff;
-            color: #333;
-            padding: 20px;
+            background-color: #1e1e2e;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
         }
+
+        .container {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1); /* Transparent background */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #output {
+            text-align: left;
+            padding: 15px;
+        }
+
+        h1 {
+            margin-top: 30px;
+            font-size: 2.5em;
+        }
+
+        p {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
         input, button {
             padding: 10px;
             margin: 10px;
@@ -19,51 +45,57 @@
             border: 2px solid #0078d7;
             border-radius: 5px;
         }
+
         button {
             background-color: #0078d7;
             color: white;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #005cbf;
         }
-        .result {
-            margin-top: 20px;
-            font-size: 1.2rem;
+
+        /* Top-right link */
+        .buy-tp {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: #0078d7;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
-        .animation {
-            margin: 20px auto;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff7eb3, #ff758c, #f24e79);
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
-            }
+
+        .buy-tp:hover {
+            background-color: #005cbf;
         }
     </style>
 </head>
 <body>
+    <!-- "Where to Buy $TP" -->
+    <a href="https://example.com" class="buy-tp" target="_blank">Where to Buy $TP</a>
+
     <h1>Time Portal</h1>
-    <p>Enter a date to discover something unique!</p>
+    <p>Enter a date to discover significant events.</p>
+
     <input type="date" id="dateInput">
     <button onclick="generateFact()">See What Happens</button>
-    <div id="output" class="result"></div>
-    <div id="animation" class="animation"></div>
+
+    <!-- Transparent Div for Results -->
+    <div class="container">
+        <div id="output">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
 
     <script>
         async function generateFact() {
             const dateInput = document.getElementById('dateInput').value; // YYYY-MM-DD format
             const output = document.getElementById('output');
-            const animation = document.getElementById('animation');
 
             if (!dateInput) {
                 output.textContent = "Please enter a valid date!";
@@ -96,19 +128,20 @@
                 const factsForYear = allFacts.filter(fact => fact.year && parseInt(fact.year) === parseInt(year));
 
                 if (factsForYear.length > 0) {
-            // Display all matching facts for the year
-            output.innerHTML = factsForYear.map(fact => `
-                <div>
-                    <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
-                </div>
-            `).join('<hr>');
+                    // Display all matching facts for the year
+                    output.innerHTML = factsForYear.map(fact => `
+                        <div>
+                            <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
+                        </div>
+                    `).join('<hr>');
                 } else if (allFacts.length > 0) {
-                    // If no year-specific fact, show a random fact
-                    const randomFact = allFacts[Math.floor(Math.random() * allFacts.length)];
-                    output.innerHTML = `
-                        <strong>${randomFact.year} (${randomFact.category}):</strong> ${randomFact.text}
-                        <br><a href="${randomFact.pages?.[0]?.content_urls?.desktop?.page || '#'}" target="_blank">Learn more</a>
-                        <p>(No specific events found for ${year}. Here's a random one from this date!)</p>`;
+                    // If no year-specific fact, show all facts from the date
+                    output.innerHTML = allFacts.map(fact => `
+                        <div>
+                            <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
+                        </div>
+                    `).join('<hr>') + `
+                        <p>(No specific events found for ${year}. Here's everything from this date!)</p>`;
                 } else {
                     // If no facts are found at all
                     output.textContent = `No significant events found for ${month}/${day}, ${year}.`;
@@ -117,17 +150,7 @@
                 output.textContent = "Error fetching data. Please try again later.";
                 console.error(error);
             }
-
-            // Randomize animation colors
-            const colors = [
-                "#ff7eb3", "#ff758c", "#f24e79", "#ffc078", "#85e3ff", "#b9fbc0", "#f9c74f"
-            ];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            animation.style.background = `linear-gradient(45deg, ${randomColor}, ${randomColor})`;
         }
-
-
-
     </script>
 </body>
 </html>
