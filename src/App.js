@@ -1,24 +1,25 @@
 import React, { useState } from "react";
 import "./App.css";
-import hourglassLoop from "./hourglassLoop.mp4"
+import hourglassLoop from "./hourglassLoop.mp4";
+import { fetchFact } from "./api/utils";
 
 const App = () => {
   const [dateInput, setDateInput] = useState("");
   const [output, setOutput] = useState("");
+  const [facts, setFacts] = useState([]); // New state to hold fact objects
+  const [message, setMessage] = useState(""); // Separate state for messages
 
   const generateFact = async () => {
     if (!dateInput) {
-      setOutput("Please enter a valid date!");
+      setMessage("Please enter a valid date!");
+      setFacts([]);
       return;
     }
 
     const [year, month, day] = dateInput.split("-");
-    const apiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
 
     try {
-      const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-      const data = await response.json();
+      const data = await fetchFact(month, day);
 
       const categories = ["selected", "events", "holidays", "births", "deaths"];
       let allFacts = [];
@@ -36,30 +37,21 @@ const App = () => {
       );
 
       if (factsForYear.length > 0) {
-        setOutput(
-          factsForYear
-            .map(
-              (fact) =>
-                `<div class="event"><strong>${fact.year} (${fact.category}):</strong> ${fact.text}</div>`
-            )
-            .join("")
-        );
+        setFacts(factsForYear);
+        setMessage(""); // Clear any previous message
       } else if (allFacts.length > 0) {
-        setOutput(
-          allFacts
-            .map(
-              (fact) =>
-                `<div class="event"><strong>${fact.year} (${fact.category}):</strong> ${fact.text}</div>`
-            )
-            .join("") +
-            `<p>(No specific events found for ${year}. Here's everything from this date!)</p>`
+        setFacts(allFacts);
+        setMessage(
+          `(No specific events found for ${year}. Here's everything from this date!)`
         );
       } else {
-        setOutput("No significant events found.");
+        setMessage("No significant events found.");
+        setFacts([]);
       }
     } catch (error) {
       console.error(error);
-      setOutput("Error fetching data. Please try again later.");
+      setMessage("Error fetching data. Please try again later.");
+      setFacts([]);
     }
   };
 
@@ -75,7 +67,6 @@ const App = () => {
 
       {/* Main Content */}
       <div className="main-content">
-
         <h1>Time Portal</h1>
         <p>Enter a date to discover significant events.</p>
 
@@ -86,11 +77,21 @@ const App = () => {
         />
         <button onClick={generateFact}>See What Happens</button>
 
-        {/* Results container */}
-        <div
-          id="output"
-          dangerouslySetInnerHTML={{ __html: output }}
-        ></div>
+        {/* Message container */}
+        {message && <p>{message}</p>}
+
+        {/* Facts container */}
+        <div id="output">
+          {facts.map((fact, index) => (
+            <div className="event" key={index}>
+              <strong>
+                {fact.year} ({fact.category}):
+              </strong>{" "}
+              {fact.text}
+              <img className="fact-image" src={fact.pages[0].originalimage.source} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
