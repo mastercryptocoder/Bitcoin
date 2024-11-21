@@ -88,7 +88,14 @@ const App = () => {
                 {fact.year} ({fact.category}):
               </strong>{" "}
               {fact.text}
-              <img className="fact-image" src={fact.pages[0].originalimage.source} />
+              {/* Only render the image if it exists */}
+              {fact.pages?.[0]?.originalimage?.source && (
+                <img
+                  className="fact-image"
+                  src={fact.pages[0].originalimage.source}
+                  alt={`Related visual for ${fact.text}`}
+                />
+              )}
             </div>
           ))}
         </div>
