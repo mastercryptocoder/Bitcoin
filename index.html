@@ -4,74 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Prevent scroll during animation */
-        }
-
-        /* Splash screen styles */
-        #splash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            animation: zoomOut 3s forwards, fadeOut 1s 3s forwards;
-        }
-
-        #splashVideo {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the video covers the entire screen */
-            z-index: -1; /* Keep the video behind other splash content */
-        }
-
-        @keyframes zoomOut {
+        /* Custom animations */
+        @keyframes split {
             0% {
-                transform: scale(2); /* Start zoomed in */
-                opacity: 1;
+                transform: translateX(0);
             }
             100% {
-                transform: scale(1); /* Zoom out to normal */
-                opacity: 1;
+                transform: translateX(-85%);
             }
         }
 
-        @keyframes fadeOut {
+        @keyframes splitRight {
             0% {
-                opacity: 1;
+                transform: translateX(0);
             }
             100% {
-                opacity: 0;
-                display: none; /* Remove splash from rendering after fade */
+                transform: translateX(85%);
             }
-        }
-
-        /* Main content styles */
-        .main-content {
-            opacity: 0; /* Initially hidden */
-            animation: fadeIn 1s 4s forwards; /* Fade in after splash screen */
-            position: relative;
-            z-index: 2;
-        }
-
-        #mainVideo {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the video covers the entire screen */
-            z-index: -1; /* Keep the video behind all main content */
         }
 
         @keyframes fadeIn {
@@ -83,102 +35,84 @@
             }
         }
 
-        /* Enhanced Title */
-        h1 {
-            margin-top: 30px;
-            font-size: 3em;
-            color: #ffc078;
-            text-shadow: 2px 2px 10px #ff9e50, 0px 0px 15px #ffc078;
-            animation: glow 2s infinite alternate;
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out forwards;
         }
 
-        @keyframes glow {
-            from {
-                text-shadow: 2px 2px 10px #ff7eb3, 0px 0px 20px #ffc078;
-            }
-            to {
-                text-shadow: 4px 4px 20px #f24e79, 0px 0px 30px #ffc078;
-            }
+        .space-gas-bg {
+            background: black;
+            background-attachment: fixed;
         }
 
-        input, button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 1rem;
-            border: 2px solid #0078d7;
-            border-radius: 5px;
-            z-index: 3; /* Ensure interactivity */
-            position: relative;
-        }
-
-        button {
-            background-color: #0078d7;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #005cbf;
-        }
-
-        /* Results container */
-        #output {
-            margin: 20px auto;
-            padding: 20px;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.1); /* Transparent background */
-            border-radius: 15px; /* Rounded edges */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Event container */
-        .event {
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px; /* Rounded edges for each entry */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            text-align: left;
-        }
-
-        .event:nth-child(odd) {
-            border-left: 5px solid #ff7eb3;
-        }
-
-        .event:nth-child(even) {
-            border-left: 5px solid #85e3ff;
+        video {
+            display: block;
+            border-radius: 20px; /* Rounded borders for videos */
+            overflow: hidden;
         }
     </style>
 </head>
-<body>
-    <!-- Splash Screen -->
-    <div id="splash">
-        <video autoplay muted loop id="splashVideo">
-            <source src="hourglassLoop.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
+<body class="overflow-auto font-sans space-gas-bg text-white">
+
 
     <!-- Main Content -->
-    <div class="main-content">
-        <video autoplay muted loop id="mainVideo">
-            <source src="hourglassLoop.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+    <div id="mainContent" class="hidden relative min-h-screen flex items-center justify-center">
+        <!-- Center Content -->
+        <div class="relative z-10 flex flex-col items-center justify-center text-center w-1/2">
+            <h1 class="text-5xl font-bold text-yellow-400 mb-4 fade-in">Time Portal</h1>
+            <p class="text-lg text-gray-300 mb-6 fade-in">Enter a date to discover significant events.</p>
 
-        <h1>Time Portal</h1>
-        <p>Enter a date to discover significant events.</p>
+            <!-- Input and Button -->
+            <div class="flex space-x-4 justify-center mb-8 fade-in">
+                <input type="date" id="dateInput" class="px-4 py-2 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 text-gray-800">
+                <button onclick="generateFact()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md">
+                    See What Happens
+                </button>
+            </div>
 
-        <input type="date" id="dateInput">
-        <button onclick="generateFact()">See What Happens</button>
+            <!-- Results Container -->
+            <div id="output" class="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6 fade-in">
+                <!-- Individual events will be displayed here -->
+            </div>
+        </div>
+    </div>
 
-        <!-- Results container -->
-        <div id="output">
-            <!-- Individual events will be displayed here -->
+    <!-- Splash Screen -->
+    <div id="splash" class="fixed inset-0 z-5 flex items-center justify-center">
+        <div class="relative flex items-center justify-center w-full max-w-6xl">
+            <!-- Left Video -->
+            <video autoplay muted loop id="leftVideo" class="w-1/2 h-auto">
+                <source src="Left_Half.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+
+            <!-- Right Video -->
+            <video autoplay muted loop id="rightVideo" class="w-1/2 h-auto">
+                <source src="Right_Half.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
     </div>
 
     <script>
+        // Splash Animation Logic
+        window.addEventListener("load", () => {
+            const splash = document.getElementById("splash");
+            const mainContent = document.getElementById("mainContent");
+            const leftVideo = document.getElementById("leftVideo");
+            const rightVideo = document.getElementById("rightVideo");
+
+            // Wait 2 seconds, then split the videos
+            setTimeout(() => {
+                leftVideo.style.animation = "split 6s forwards"; // Split animation
+                rightVideo.style.animation = "splitRight 6s forwards"; // Split animation
+
+                // Keep videos in split position and fade in main content
+                setTimeout(() => {
+                    mainContent.classList.remove("hidden"); // Show main content
+                }, 3000); // Matches split duration
+            }, 2000); // Initial delay for splash
+        });
+
         async function generateFact() {
             const dateInput = document.getElementById('dateInput').value; // YYYY-MM-DD format
             const output = document.getElementById('output');
@@ -209,16 +143,21 @@
 
                 if (factsForYear.length > 0) {
                     output.innerHTML = factsForYear.map(fact => `
-                        <div class="event">
-                            <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
+                        <div class="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4">
+                            <strong>${fact.year} (${fact.category}):</strong> {" "} 
+                            ${fact.text}
+                            <img
+                            src=${fact?.pages[0]?.originalimage?.source}
+                            alt=${`Related visual for ${fact.text}`}
+                            />
                         </div>
                     `).join('');
                 } else if (allFacts.length > 0) {
                     output.innerHTML = allFacts.map(fact => `
-                        <div class="event">
+                        <div class="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4">
                             <strong>${fact.year} (${fact.category}):</strong> ${fact.text}
                         </div>
-                    `).join('') + `<p>(No specific events found for ${year}. Here's everything from this date!)</p>`;
+                    `).join('') + `<p class="text-gray-300">(No specific events found for ${year}. Here's everything from this date!)</p>`;
                 } else {
                     output.textContent = "No significant events found.";
                 }
