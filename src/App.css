@@ -16,7 +16,11 @@ body {
   width: 100%;
   height: 100%;
   z-index: -1;
+<<<<<<< HEAD
   animation: zoomOut 2s forwards;
+=======
+  animation: zoomOut 1.5s forwards
+>>>>>>> c21649c0c8c0555f7290e1da3f4524d72268b099
 }
 
 #splashVideo {
