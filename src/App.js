@@ -68,7 +68,7 @@ const App = () => {
       {/* Main Content */}
       <div className="main-content">
         <h1>Time Portal</h1>
-        <p>Enter a date to discover significant events.</p>
+        <p>Enter a date to travel through the portal.</p>
 
         <input
           type="date"
