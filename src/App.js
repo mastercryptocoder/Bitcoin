@@ -66,14 +66,18 @@ function App() {
       // Add a slight delay before disabling the transition video
       setTimeout(() => {
         setTransitionActive(false);
-      }, 2000); // Adjust the duration (2000ms = 2 seconds) to match your video's length
+      }, 1000); // Adjust the duration (2000ms = 2 seconds) to match your video's length
     }
   }
 
   function searchDate() {
-    // Activate the transition video immediately
+    // Activate transition first
     setTransitionActive(true);
-    generateFact();
+  
+    // Delay `generateFact` slightly to ensure the UI updates
+    setTimeout(() => {
+      generateFact();
+    }, 3000); // Small delay to allow `transitionActive` to take effect
   }
 
   function resetPage() {
@@ -97,16 +101,24 @@ function App() {
       </video>
 
       {/* Transition Video */}
-      {transitionActive && (
+      {transitionActive && 
         <video
-          id="transitionVideo"
-          className="absolute top-0 left-0 w-full h-full object-cover z-50"
-          autoPlay
-          muted
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "100%", // Adjust size here
+          height: "auto",
+          zIndex: 50,
+        }}
+        autoPlay
+        loop
+        muted
         >
           <source src={TestOverlay} type="video/webm" />
         </video>
-      )}
+      }
 
       {/* Main Content */}
       <div className="relative flex flex-col items-center justify-center min-h-screen text-center">

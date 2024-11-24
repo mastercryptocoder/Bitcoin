@@ -128,8 +128,13 @@ button:active {
   background: #003f8c;
 }
 
+button:focus,
+input:focus {
+    outline: 3px solid #ffd166;
+    outline-offset: 2px;
+}
 /* Results container */
-#output {
+.output {
   margin: 20px auto;
   padding: 20px;
   max-width: 800px;
@@ -271,13 +276,14 @@ video {
 }
 
 #transitionVideo {
-  display: none;
-  pointer-events: none;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease-in-out;
+  object-fit: cover; /* Maintains aspect ratio */
+
 }
 
 #transitionVideo.visible {
-  display: block;
+  pointer-events: auto;
   opacity: 1;
 }
