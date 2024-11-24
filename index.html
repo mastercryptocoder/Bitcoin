@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes jiggle {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-5deg);
+            }
+            50% {
+                transform: rotate(5deg);
+            }
+            75% {
+                transform: rotate(-5deg);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .shake:hover {
+            animation: jiggle 0.4s ease-in-out;
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .space-gas-bg {
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .space-gas-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: black;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        #backgroundVideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        video {
+            display: block;
+            overflow: hidden;
+        }
+
+        #transitionVideo {
+            display: none;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #transitionVideo.visible {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="overflow-auto font-sans space-gas-bg text-white relative">
+
+    <video id="backgroundVideo" autoplay muted loop>
+        <source src="StarsLoop.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <video id="transitionVideo" class="absolute top-0 left-0 w-full h-full object-cover z-50" muted playsinline preload="auto">
+        <source src="TestOverlay.webm" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+
+    <div id="mainContent" class="relative min-h-screen flex items-center justify-center">
+        <div class="relative z-10 flex flex-col items-center justify-center text-center">
+            <img id="logo" src="TimePortal.gif" alt="Time Portal Logo" class="mb-4 fade-in" width="1000">
+            <p id="enterDateText" class="text-lg text-gray-300 mb-6 fade-in">Enter The Date</p>
+
+            <div id="dateInputContainer" class="flex space-x-4 justify-center mb-8 fade-in">
+                <input type="date" id="dateInput" class="px-4 py-2 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 text-gray-800">
+                <button id="startButton" onclick="generateFact()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md">
+                    Start
+                </button>
+            </div>
+
+            <div id="output" class="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6 fade-in"></div>
+
+            <button id="resetButton" onclick="resetPage()" class="bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md mt-6 hidden">
+                Go Back In Time
+            </button>
+
+            <!-- Updated Buttons Section -->
+            <div id="socialLinks" class="flex space-x-4 justify-center mt-8 fade-in">
+                <a href="https://twitter.com" target="_blank" class="shake float">
+                    <img src="TwitterPng.png" alt="Twitter Logo" class="w-8 h-8">
+                </a>
+                <a href="https://instagram.com" target="_blank" class="shake float">
+                    <img src="IGPng.png" alt="Instagram Logo" class="w-8 h-8">
+                </a>
+                <a href="https://photon.com" target="_blank" class="shake float">
+                    <img src="PhotonPng.png" alt="Photon Logo" class="w-8 h-8">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiCache = {};
+
+        async function fetchWithCache(url) {
+            if (apiCache[url]) {
+                return apiCache[url];
+            }
+            const response = await fetch(url);
+            const data = await response.json();
+            apiCache[url] = data;
+            return data;
+        }
+
+        async function generateFact() {
+            const dateInput = document.getElementById('dateInput').value;
+            const output = document.getElementById('output');
+            const transitionVideo = document.getElementById('transitionVideo');
+            const logo = document.getElementById('logo');
+            const enterDateText = document.getElementById('enterDateText');
+            const startButton = document.getElementById('startButton');
+            const dateInputContainer = document.getElementById('dateInputContainer');
+            const resetButton = document.getElementById('resetButton');
+            const socialLinks = document.getElementById('socialLinks');
+
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+                output.textContent = "Please enter a valid date!";
+                return;
+            }
+
+            // Hide initial elements
+            logo.classList.add('hidden');
+            enterDateText.classList.add('hidden');
+            dateInputContainer.classList.add('hidden');
+            socialLinks.classList.add('hidden'); // Hide social media links
+
+            // Play transition effect
+            transitionVideo.classList.add('visible');
+            transitionVideo.play();
+
+            transitionVideo.onended = async () => {
+                transitionVideo.classList.remove('visible');
+
+                try {
+                    const [year, month, day] = dateInput.split("-");
+                    const apiUrl = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
+                    const data = await fetchWithCache(apiUrl);
+                    const allFacts = [...(data.events || []), ...(data.births || []), ...(data.deaths || []), ...(data.holidays || [])];
+                    const factsForYear = allFacts.filter(fact => fact.year && parseInt(fact.year) === parseInt(year));
+
+                    output.innerHTML = factsForYear.length > 0
+                        ? factsForYear.map(fact => `
+                            <div class="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4">
+                                <strong>${fact.year}:</strong> ${fact.text}
+                            </div>`).join('')
+                        : `<p class="text-gray-300">No specific events found for ${year}. Here's everything from this date!</p>`;
+                } catch (error) {
+                    console.error(error);
+                    output.textContent = "Failed to fetch data. Please try again later.";
+                }
+
+                // Show reset button
+                resetButton.classList.remove('hidden');
+            };
+        }
+
+        function resetPage() {
+            const transitionVideo = document.getElementById('transitionVideo');
+            const socialLinks = document.getElementById('socialLinks');
+
+            // Replay transition video
+            transitionVideo.classList.add('visible');
+            transitionVideo.play();
+
+            transitionVideo.onended = () => {
+                transitionVideo.classList.remove('visible');
+                location.reload(); // Reload the page after the transition finishes
+            };
+
+            // Show social media logos again
+            socialLinks.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
