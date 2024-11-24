@@ -2,14 +2,22 @@ import React, { useState } from "react";
 import "./App.css";
 import hourglassLoop from "./hourglassLoop.mp4";
 import { fetchFact } from "./api/utils";
+import StarsLoop from "./StarsLoop.mp4"; // Background video
+import TestOverlay from "./TestOverlay.webm"; // Transition video
+import TimePortalGif from "./TimePortal.gif"; // Logo GIF
+import TwitterLogo from "./TwitterPng.png"; // Social media logos
+import InstagramLogo from "./IgPng.png";
+import PhotonLogo from "./PhotonPng.png";
 
-const App = () => {
+function App() {
   const [dateInput, setDateInput] = useState("");
   const [output, setOutput] = useState("");
   const [facts, setFacts] = useState([]); // New state to hold fact objects
   const [message, setMessage] = useState(""); // Separate state for messages
+  const [transitionActive, setTransitionActive] = useState(false);
+  const [factDisplayed, setFactDisplayed] = useState(false);
 
-  const generateFact = async () => {
+  async function generateFact() {
     if (!dateInput) {
       setMessage("Please enter a valid date!");
       setFacts([]);
@@ -39,69 +47,130 @@ const App = () => {
       if (factsForYear.length > 0) {
         setFacts(factsForYear);
         setMessage(""); // Clear any previous message
+        setFactDisplayed(true);
       } else if (allFacts.length > 0) {
         setFacts(allFacts);
         setMessage(
           `(No specific events found for ${year}. Here's everything from this date!)`
         );
+        setFactDisplayed(true);
+
       } else {
         setMessage("No significant events found.");
         setFacts([]);
+        setFactDisplayed(true);
       }
     } catch (error) {
       console.error(error);
       setMessage("Error fetching data. Please try again later.");
       setFacts([]);
     }
-  };
+  }
+
+  function resetPage() {
+    setDateInput("");
+    setFacts([]);
+    setMessage("");
+  }
 
   return (
     <div>
-      {/* Splash Screen */}
-      <div id="splash">
-        <video autoPlay muted loop id="splashVideo">
-          <source src={hourglassLoop} type="video/mp4" />
-          Your browser does not support the video tag.
+      {/* Background Video */}
+      <video
+        id="backgroundVideo"
+        autoPlay
+        muted
+        loop
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+      >
+        <source src={StarsLoop} type="video/mp4" />
+      </video>
+
+      {/* Transition Video */}
+      {transitionActive && (
+        <video
+          id="transitionVideo"
+          className="absolute top-0 left-0 w-full h-full object-cover z-50"
+          autoPlay
+          muted
+        >
+          <source src={TestOverlay} type="video/webm" />
         </video>
-      </div>
+      )}
 
       {/* Main Content */}
-      <div className="main-content">
-        <h1>Time Portal</h1>
-        <p>Enter a date to travel through the portal.</p>
-
-        <input
-          type="date"
-          value={dateInput}
-          onChange={(e) => setDateInput(e.target.value)}
+      <div className="relative flex flex-col items-center justify-center min-h-screen text-center">
+        <img
+          src={TimePortalGif}
+          alt="Time Portal Logo"
+          className="mb-4"
+          width="1000"
         />
-        <button onClick={generateFact}>See What Happens</button>
+        <p className="text-lg text-gray-300 mb-6">Enter The Date</p>
 
-        {/* Message container */}
-        {message && <p>{message}</p>}
+        <div className="flex space-x-4 justify-center mb-8">
+          <input
+            type="date"
+            className="px-4 py-2 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 text-gray-800"
+            value={dateInput}
+            onChange={(e) => setDateInput(e.target.value)}
+          />
+          <button
+            onClick={generateFact}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md"
+          >
+            Start
+          </button>
+        </div>
 
-        {/* Facts container */}
-        <div id="output">
+        {/* Output Section */}
+        <div
+          id="output"
+          className="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6"
+        >
+          {message && <p className="text-gray-300 mb-4">{message}</p>}
           {facts.map((fact, index) => (
-            <div className="event" key={index}>
-              <strong>
-                {fact.year} ({fact.category}):
-              </strong>{" "}
-              {fact.text}
-              {/* Only render the image if it exists */}
-              {fact.pages?.[0]?.originalimage?.source && (
-                <img
-                  className="fact-image"
-                  src={fact.pages[0].originalimage.source}
-                  alt={`Related visual for ${fact.text}`}
-                />
-              )}
+            <div
+              key={index}
+              className="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4"
+            >
+              <strong>{fact.year}:</strong> {fact.text}
             </div>
           ))}
+        </div>
+
+        {factDisplayed && <button
+          onClick={resetPage}
+          className={`bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md mt-6 ${
+            facts.length === 0 ? "hidden" : ""
+          }`}
+        >
+          Go Back In Time
+        </button>}
+
+        {/* Social Media Links */}
+        <div className="flex space-x-4 justify-center mt-8">
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+            <img src={TwitterLogo} alt="Twitter Logo" className="w-8 h-8" />
+          </a>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={InstagramLogo} alt="Instagram Logo" className="w-8 h-8" />
+          </a>
+          <a
+            href="https://photon.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={PhotonLogo} alt="Photon Logo" className="w-8 h-8" />
+          </a>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default App;
