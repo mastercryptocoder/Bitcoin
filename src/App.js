@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./App.css";
-import hourglassLoop from "./hourglassLoop.mp4";
 import { fetchFact } from "./api/utils";
 import StarsLoop from "./StarsLoop.mp4"; // Background video
 import TestOverlay from "./TestOverlay.webm"; // Transition video
@@ -11,7 +10,6 @@ import PhotonLogo from "./PhotonPng.png";
 
 function App() {
   const [dateInput, setDateInput] = useState("");
-  const [output, setOutput] = useState("");
   const [facts, setFacts] = useState([]); // New state to hold fact objects
   const [message, setMessage] = useState(""); // Separate state for messages
   const [transitionActive, setTransitionActive] = useState(false);
@@ -23,15 +21,15 @@ function App() {
       setFacts([]);
       return;
     }
-
+  
     const [year, month, day] = dateInput.split("-");
-
+  
     try {
       const data = await fetchFact(month, day);
-
+  
       const categories = ["selected", "events", "holidays", "births", "deaths"];
       let allFacts = [];
-
+  
       categories.forEach((category) => {
         if (data[category] && data[category].length > 0) {
           allFacts = allFacts.concat(
@@ -39,11 +37,11 @@ function App() {
           );
         }
       });
-
+  
       const factsForYear = allFacts.filter(
         (fact) => fact.year && parseInt(fact.year) === parseInt(year)
       );
-
+  
       if (factsForYear.length > 0) {
         setFacts(factsForYear);
         setMessage(""); // Clear any previous message
@@ -54,7 +52,6 @@ function App() {
           `(No specific events found for ${year}. Here's everything from this date!)`
         );
         setFactDisplayed(true);
-
       } else {
         setMessage("No significant events found.");
         setFacts([]);
@@ -64,13 +61,26 @@ function App() {
       console.error(error);
       setMessage("Error fetching data. Please try again later.");
       setFacts([]);
+      
+    } finally {
+      // Add a slight delay before disabling the transition video
+      setTimeout(() => {
+        setTransitionActive(false);
+      }, 2000); // Adjust the duration (2000ms = 2 seconds) to match your video's length
     }
+  }
+
+  function searchDate() {
+    // Activate the transition video immediately
+    setTransitionActive(true);
+    generateFact();
   }
 
   function resetPage() {
     setDateInput("");
     setFacts([]);
     setMessage("");
+    setFactDisplayed(false);
   }
 
   return (
@@ -116,7 +126,7 @@ function App() {
             onChange={(e) => setDateInput(e.target.value)}
           />
           <button
-            onClick={generateFact}
+            onClick={searchDate}
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md"
           >
             Start
