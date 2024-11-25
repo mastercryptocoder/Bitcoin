@@ -103,15 +103,7 @@ function App() {
       {/* Transition Video */}
       {transitionActive && 
         <video
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "100%", // Adjust size here
-          height: "auto",
-          zIndex: 50,
-        }}
+        className="absolute top-0 left-0 w-full h-full object-cover z-50"
         autoPlay
         loop
         muted
