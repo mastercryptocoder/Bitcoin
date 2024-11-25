@@ -7,6 +7,7 @@ import TimePortalGif from "./TimePortal.gif"; // Logo GIF
 import TwitterLogo from "./TwitterPng.png"; // Social media logos
 import InstagramLogo from "./IgPng.png";
 import PhotonLogo from "./PhotonPng.png";
+import PortalLogo from "./PortalLogo.png";
 
 function App() {
   const [dateInput, setDateInput] = useState("");
@@ -21,15 +22,15 @@ function App() {
       setFacts([]);
       return;
     }
-  
+
     const [year, month, day] = dateInput.split("-");
-  
+
     try {
       const data = await fetchFact(month, day);
-  
+
       const categories = ["selected", "events", "holidays", "births", "deaths"];
       let allFacts = [];
-  
+
       categories.forEach((category) => {
         if (data[category] && data[category].length > 0) {
           allFacts = allFacts.concat(
@@ -37,11 +38,11 @@ function App() {
           );
         }
       });
-  
+
       const factsForYear = allFacts.filter(
         (fact) => fact.year && parseInt(fact.year) === parseInt(year)
       );
-  
+
       if (factsForYear.length > 0) {
         setFacts(factsForYear);
         setMessage(""); // Clear any previous message
@@ -61,7 +62,6 @@ function App() {
       console.error(error);
       setMessage("Error fetching data. Please try again later.");
       setFacts([]);
-      
     } finally {
       // Add a slight delay before disabling the transition video
       setTimeout(() => {
@@ -73,7 +73,7 @@ function App() {
   function searchDate() {
     // Activate transition first
     setTransitionActive(true);
-  
+
     // Delay `generateFact` slightly to ensure the UI updates
     setTimeout(() => {
       generateFact();
@@ -88,7 +88,9 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="overflow-auto font-sans space-gas-bg text-white relative">
+      <img id="coinLogo" src={PortalLogo} alt="Spinning Coin Logo" />
+
       {/* Background Video */}
       <video
         id="backgroundVideo"
@@ -101,23 +103,23 @@ function App() {
       </video>
 
       {/* Transition Video */}
-      {transitionActive && 
+      {transitionActive && (
         <video
-        className="absolute top-0 left-0 w-full h-full object-cover z-50"
-        autoPlay
-        loop
-        muted
+          className="absolute top-0 left-0 w-full h-full object-cover z-50"
+          autoPlay
+          loop
+          muted
         >
           <source src={TestOverlay} type="video/webm" />
         </video>
-      }
+      )}
 
       {/* Main Content */}
       <div className="relative flex flex-col items-center justify-center min-h-screen text-center">
         <img
           src={TimePortalGif}
           alt="Time Portal Logo"
-          className="mb-4"
+          className="mb-4 fade-in glitch"
           width="1000"
         />
         <p className="text-lg text-gray-300 mb-6">Enter The Date</p>
@@ -138,39 +140,49 @@ function App() {
         </div>
 
         {/* Output Section */}
-        <div
-          id="output"
-          className="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6"
-        >
-          {message && <p className="text-gray-300 mb-4">{message}</p>}
-          {facts.map((fact, index) => (
-            <div
-              key={index}
-              className="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4"
-            >
-              <strong>{fact.year}:</strong> {fact.text}
-            </div>
-          ))}
-        </div>
+        {factDisplayed && (
+          <div
+            id="output"
+            className="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6"
+          >
+            {message && <p className="text-gray-300 mb-4">{message}</p>}
+            {facts.map((fact, index) => (
+              <div
+                key={index}
+                className="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4"
+              >
+                <strong>{fact.year}:</strong> {fact.text}
+              </div>
+            ))}
+          </div>
+        )}
 
-        {factDisplayed && <button
-          onClick={resetPage}
-          className={`bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md mt-6 ${
-            facts.length === 0 ? "hidden" : ""
-          }`}
-        >
-          Go Back In Time
-        </button>}
+        {factDisplayed && (
+          <button
+            onClick={resetPage}
+            className={`bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md mt-6 ${
+              facts.length === 0 ? "hidden" : ""
+            }`}
+          >
+            Go Back In Time
+          </button>
+        )}
 
         {/* Social Media Links */}
-        <div className="flex space-x-4 justify-center mt-8">
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+        <div className="flex space-x-4 justify-center mt-8 fade-in">
+          <a
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="float-wave hover-stop"
+          >
             <img src={TwitterLogo} alt="Twitter Logo" className="w-8 h-8" />
           </a>
           <a
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
+            className="float-wave hover-stop"
           >
             <img src={InstagramLogo} alt="Instagram Logo" className="w-8 h-8" />
           </a>
@@ -178,6 +190,7 @@ function App() {
             href="https://photon.com"
             target="_blank"
             rel="noopener noreferrer"
+            className="float-wave hover-stop"
           >
             <img src={PhotonLogo} alt="Photon Logo" className="w-8 h-8" />
           </a>
