@@ -5,7 +5,6 @@ import StarsLoop from "./StarsLoop.mp4"; // Background video
 import TestOverlay from "./TestOverlay.webm"; // Transition video
 import TimePortalGif from "./TimePortal.gif"; // Logo GIF
 import TwitterLogo from "./TwitterPng.png"; // Social media logos
-import InstagramLogo from "./IgPng.png";
 import PhotonLogo from "./PhotonPng.png";
 import PortalLogo from "./PortalLogo.png";
 
@@ -17,12 +16,6 @@ function App() {
   const [factDisplayed, setFactDisplayed] = useState(false);
 
   async function generateFact() {
-    if (!dateInput) {
-      setMessage("Please enter a valid date!");
-      setFacts([]);
-      return;
-    }
-
     const [year, month, day] = dateInput.split("-");
 
     try {
@@ -72,6 +65,13 @@ function App() {
 
   function searchDate() {
     // Activate transition first
+
+    if (!dateInput) {
+      setMessage("Please enter a valid date!");
+      setFacts([]);
+      return;
+    }
+
     setTransitionActive(true);
 
     // Delay `generateFact` slightly to ensure the UI updates
@@ -115,8 +115,9 @@ function App() {
       )}
 
       {/* Main Content */}
-      <div className="relative flex flex-col items-center justify-center min-h-screen text-center">
+      <div id ="main-content" className="relative flex flex-col items-center min-h-screen text-center">
         <img
+          id="portal-logo"
           src={TimePortalGif}
           alt="Time Portal Logo"
           className="mb-4 fade-in glitch"
@@ -157,17 +158,6 @@ function App() {
           </div>
         )}
 
-        {factDisplayed && (
-          <button
-            onClick={resetPage}
-            className={`bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md mt-6 ${
-              facts.length === 0 ? "hidden" : ""
-            }`}
-          >
-            Go Back In Time
-          </button>
-        )}
-
         {/* Social Media Links */}
         <div className="flex space-x-4 justify-center mt-8 fade-in">
           <a
@@ -176,15 +166,7 @@ function App() {
             rel="noopener noreferrer"
             className="float-wave hover-stop"
           >
-            <img src={TwitterLogo} alt="Twitter Logo" className="w-8 h-8" />
-          </a>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="float-wave hover-stop"
-          >
-            <img src={InstagramLogo} alt="Instagram Logo" className="w-8 h-8" />
+            <img src={TwitterLogo} alt="Twitter Logo" className="w-12 h-12" />
           </a>
           <a
             href="https://photon.com"
@@ -192,7 +174,7 @@ function App() {
             rel="noopener noreferrer"
             className="float-wave hover-stop"
           >
-            <img src={PhotonLogo} alt="Photon Logo" className="w-8 h-8" />
+            <img src={PhotonLogo} alt="Photon Logo" className="w-12 h-12" />
           </a>
         </div>
       </div>

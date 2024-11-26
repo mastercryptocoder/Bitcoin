@@ -124,11 +124,12 @@ body {
   position: relative;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
+  overflow: auto;
+  z-index: 1;
 }
 
 #backgroundVideo {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -152,16 +153,22 @@ body {
   opacity: 1;
 }
 
+#portal-logo {
+
+}
+
 #coinLogo {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 128px;
-  height: 128px;
-  animation: spin 3s linear infinite;
+  top: 2%; /* Position relative to the viewport height */
+  right: 5%; /* Adjust for responsiveness */
+  width: 10vw; /* Set width as a percentage of the viewport width */
+  max-width: 200px; /* Set a maximum size */
+  height: auto; /* Maintain aspect ratio */
+  animation: spin 10s linear infinite;
   z-index: 100;
   cursor: pointer;
 }
+
 
 .speech-bubble {
   position: absolute;
@@ -191,7 +198,7 @@ body {
 .main-content {
   opacity: 0;
   animation: fadeIn 1s 2s forwards;
-  position: relative;
+  position: absolute;
   z-index: 2;
   overflow-y: auto;
 }
@@ -309,112 +316,6 @@ input:focus {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes jiggle {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-5deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
-  75% {
-    transform: rotate(-5deg);
-  }
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.float-wave:nth-child(1) {
-  animation: float 3s ease-in-out infinite;
-  animation-delay: 0s;
-}
-
-.float-wave:nth-child(2) {
-  animation: float 3s ease-in-out infinite;
-  animation-delay: 0.3s;
-}
-
-.float-wave:nth-child(3) {
-  animation: float 3s ease-in-out infinite;
-  animation-delay: 0.6s;
-}
-
-.space-gas-bg {
-  position: relative;
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.space-gas-bg::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: black;
-  z-index: -2;
-  pointer-events: none;
-}
-
-#backgroundVideo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: -1;
-  object-fit: cover;
-}
-
-video {
-  display: block;
-  overflow: hidden;
-}
-
-#transitionVideo {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease-in-out;
-  object-fit: cover; /* Maintains aspect ratio */
-}
-
-#transitionVideo.visible {
-  pointer-events: auto;
-  opacity: 1;
+#main-content {
+  top: 0px
 }
