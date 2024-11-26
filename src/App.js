@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import { fetchFact } from "./api/utils";
 import StarsLoop from "./StarsLoop.mp4"; // Background video
@@ -8,29 +8,55 @@ import TwitterLogo from "./TwitterPng.png"; // Social media logos
 import InstagramLogo from "./IgPng.png";
 import PhotonLogo from "./PhotonPng.png";
 import PortalLogo from "./PortalLogo.png";
+import LoadingCircle from "./LoadingCircle.mp4";
 
 function App() {
-  const [dateInput, setDateInput] = useState("");
-  const [facts, setFacts] = useState([]); // New state to hold fact objects
-  const [message, setMessage] = useState(""); // Separate state for messages
-  const [transitionActive, setTransitionActive] = useState(false);
-  const [factDisplayed, setFactDisplayed] = useState(false);
+  const [dateInput, setDateInput] = useState(""); // State for date input
+  const [data, setDataInput] = useState([]); // State for date input
+  const [facts, setFacts] = useState([]); // State to hold fetched facts
+  const [message, setMessage] = useState(""); // State for displaying messages
+  const [transitionActive, setTransitionActive] = useState(false); // State to control transition video visibility
+  const [loadingVisible, setLoadingVisible] = useState(false); // State to control loading video visibility
+  const [factsReady, setFactsReady] = useState(false); // State to track when facts are ready to display
+  const [transitionTriggered, setTransitionTriggered] = useState(false); // State to prevent multiple triggers
+  const transitionRef = useRef(null); // Ref for transition video
 
-  async function generateFact() {
+  async function generateFact(){
+      // Function to fetch and display facts based on the input date
     if (!dateInput) {
-      setMessage("Please enter a valid date!");
-      setFacts([]);
+      setMessage("Please enter a valid date!"); // Display error if no date entered
+      setFacts([]); // Clear facts
       return;
     }
 
-    const [year, month, day] = dateInput.split("-");
+    const [year, month, day] = dateInput.split("-"); // Split input date into components
 
     try {
-      const data = await fetchFact(month, day);
+      const dataReceived = await fetchFact(month, day); // Fetch facts using utility function
+      setDataInput(dataReceived);
+      setTransitionActive(true);
+    }
+    catch(error){
+      console.error(error);
+    }
+  }
 
+  // Function to fetch and display facts based on the input date
+  async function applyFact() {
+    if (!dateInput) {
+      setMessage("Please enter a valid date!"); // Display error if no date entered
+      setFacts([]); // Clear facts
+      return;
+    }
+
+   const [year, month, day] = dateInput.split("-"); // Split input date into components
+
+    try {
+      // Activate transition once data is fetched
       const categories = ["selected", "events", "holidays", "births", "deaths"];
       let allFacts = [];
 
+      // Combine all categories of facts into a single array
       categories.forEach((category) => {
         if (data[category] && data[category].length > 0) {
           allFacts = allFacts.concat(
@@ -39,52 +65,69 @@ function App() {
         }
       });
 
+      // Filter facts to match the specified year
       const factsForYear = allFacts.filter(
         (fact) => fact.year && parseInt(fact.year) === parseInt(year)
       );
 
       if (factsForYear.length > 0) {
-        setFacts(factsForYear);
-        setMessage(""); // Clear any previous message
-        setFactDisplayed(true);
-      } else if (allFacts.length > 0) {
-        setFacts(allFacts);
-        setMessage(
-          `(No specific events found for ${year}. Here's everything from this date!)`
-        );
-        setFactDisplayed(true);
-      } else {
-        setMessage("No significant events found.");
+        setFacts(factsForYear); // Set filtered facts
+        setMessage(""); // Clear any previous messages
+        console.log("set facts");
+
+      } 
+      // else if (allFacts.length > 0) {
+      //   setFacts(allFacts); // Display all facts if no year-specific facts found
+      //   setMessage(
+      //     `(No specific events found for ${year}. Here's everything from this date!)`
+      //   );
+      // } 
+      else {
+        setMessage("No significant events found."); // Show message if no facts found
         setFacts([]);
-        setFactDisplayed(true);
       }
+
+      // Indicate that facts are ready to be displayed
+      setFactsReady(true);
+
     } catch (error) {
       console.error(error);
-      setMessage("Error fetching data. Please try again later.");
+      setMessage("Error fetching data. Please try again later."); // Handle fetch errors
       setFacts([]);
+      setFactsReady(false);
     } finally {
-      // Add a slight delay before disabling the transition video
-      setTimeout(() => {
-        setTransitionActive(false);
-      }, 1000); // Adjust the duration (2000ms = 2 seconds) to match your video's length
+      setTransitionTriggered(false);
     }
   }
 
+  // Function triggered when the "Start" button is clicked
   function searchDate() {
-    // Activate transition first
-    setTransitionActive(true);
-
-    // Delay `generateFact` slightly to ensure the UI updates
-    setTimeout(() => {
-      generateFact();
-    }, 3000); // Small delay to allow `transitionActive` to take effect
+    setLoadingVisible(true); // Show loading video
+    generateFact(); // Start fetching data
   }
 
+  // Function to track video progress and start actions at 90%
+  function handleTransitionProgress() {
+    const video = transitionRef.current;
+    if (!video || transitionTriggered) return;
+
+    const progress = video.currentTime / video.duration;
+    if (progress >= 0.7) {
+      setTransitionTriggered(true); // Prevent multiple triggers
+      applyFact();
+    }
+    if(progress >= 1){
+      setTransitionActive(false); // Hide transition video
+      // Stop loading video
+      setLoadingVisible(false);
+    }
+  }
+
+  // Function to reset the app state
   function resetPage() {
-    setDateInput("");
-    setFacts([]);
-    setMessage("");
-    setFactDisplayed(false);
+    setDateInput(""); // Clear date input
+    setFacts([]); // Clear facts
+    setMessage(""); // Clear messages
   }
 
   return (
@@ -105,10 +148,11 @@ function App() {
       {/* Transition Video */}
       {transitionActive && (
         <video
+          ref={transitionRef}
           className="absolute top-0 left-0 w-full h-full object-cover z-50"
           autoPlay
-          loop
           muted
+          onTimeUpdate={handleTransitionProgress} // Track video progress
         >
           <source src={TestOverlay} type="video/webm" />
         </video>
@@ -122,52 +166,67 @@ function App() {
           className="mb-4 fade-in glitch"
           width="1000"
         />
-        <p className="text-lg text-gray-300 mb-6">Enter The Date</p>
+        <p className="text-lg text-gray-300 mb-6">Search a Significant Day! (9/11/2001)</p>
 
         <div className="flex space-x-4 justify-center mb-8">
           <input
             type="date"
-            className="px-4 py-2 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 text-gray-800"
+            className="px-4 py-2 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 text-white-800"
             value={dateInput}
             onChange={(e) => setDateInput(e.target.value)}
           />
           <button
             onClick={searchDate}
+            disabled={loadingVisible}
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md"
           >
-            Start
+            {!loadingVisible && "Search!"}
+            
+            {/* Loading Video */}
+            {loadingVisible && (
+              <video
+                id="loadingVideo"
+                autoPlay
+                muted
+                loop
+                className="absolute top-0 left-0 w-full h-full object-cover z-50"
+              >
+                <source src={LoadingCircle} type="video/mp4" />
+              </video>
+            )}
           </button>
         </div>
 
-        {/* Output Section */}
-        {factDisplayed && (
+        {/* Facts Output */}
+        {facts.length > 0 && (
           <div
             id="output"
-            className="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6"
-          >
+            className="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6 output">
             {message && <p className="text-gray-300 mb-4">{message}</p>}
             {facts.map((fact, index) => (
-              <div
-                key={index}
-                className="bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4"
-              >
+            <div
+              key={index}
+              className="fact-item flex bg-gray-700 bg-opacity-80 text-white p-4 rounded-lg mb-4">
+              <div className="fact-text flex-0 pr-4">
+                {/* Fact Text */}
                 <strong>{fact.year}:</strong> {fact.text}
               </div>
+              <div className="flex-shrink-1">
+                {/* Fact Image */}
+                {fact?.pages?.[0]?.originalimage?.source && (
+                  <img
+                    src={fact.pages[0].originalimage.source}
+                    alt="Fact Image"
+                    className="fact-image rounded-lg w-80 h-80 object-contain"
+                  />
+                )}
+              </div>
+            </div>
             ))}
-          </div>
-        )}
+            </div>
 
-        {factDisplayed && (
-          <button
-            onClick={resetPage}
-            className={`bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md mt-6 ${
-              facts.length === 0 ? "hidden" : ""
-            }`}
-          >
-            Go Back In Time
-          </button>
         )}
-
+        
         {/* Social Media Links */}
         <div className="flex space-x-4 justify-center mt-8 fade-in">
           <a
@@ -177,14 +236,6 @@ function App() {
             className="float-wave hover-stop"
           >
             <img src={TwitterLogo} alt="Twitter Logo" className="w-8 h-8" />
-          </a>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="float-wave hover-stop"
-          >
-            <img src={InstagramLogo} alt="Instagram Logo" className="w-8 h-8" />
           </a>
           <a
             href="https://photon.com"
