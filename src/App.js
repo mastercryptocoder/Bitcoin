@@ -31,7 +31,7 @@ function App() {
       let count = 0;
       let dataReceived = []
 
-      while(count < 3 || dataReceived.length == 0){
+      while(count < 3 && dataReceived.length < 1){
         dataReceived = await fetchFact(month, day); // Fetch facts using utility function
         count++;
       }
@@ -142,6 +142,7 @@ function App() {
           src={PortalLogo}
           alt="Spinning Coin Logo"
           onClick={copyToClipboard}
+          onMouseEnter={playHoverSound}
         />
       </div>
 
