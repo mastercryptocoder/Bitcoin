@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/Bitcoin/static/css/main.702b59ed.css",
+    "main.js": "/Bitcoin/static/js/main.c02e25aa.js",
+    "static/js/453.334fc5ca.chunk.js": "/Bitcoin/static/js/453.334fc5ca.chunk.js",
+    "static/media/TestOverlay.webm": "/Bitcoin/static/media/TestOverlay.e7c1387c1e63f45b7369.webm",
+    "static/media/LoadingCircle.mp4": "/Bitcoin/static/media/LoadingCircle.abcf932faa41528a20cc.mp4",
+    "static/media/StarsLoop.mp4": "/Bitcoin/static/media/StarsLoop.3513dfa9604abd2e8068.mp4",
+    "static/media/copytoken.gif": "/Bitcoin/static/media/copytoken.9f3c5088e97a9d669eb9.gif",
+    "static/media/TimePortal.gif": "/Bitcoin/static/media/TimePortal.f1db2cc34fc227e5ffd7.gif",
+    "static/media/timeportal-theme.mp3": "/Bitcoin/static/media/timeportal-theme.6513e1777aeb1c2c383c.mp3",
+    "static/media/PortalLogo.png": "/Bitcoin/static/media/PortalLogo.9c189119fd8931ab38df.png",
+    "static/media/PhotonPng.png": "/Bitcoin/static/media/PhotonPng.2e1d2d578b815c4e7a4c.png",
+    "static/media/TwitterPng.png": "/Bitcoin/static/media/TwitterPng.9eb6e0c77bed1befe331.png",
+    "static/media/button-hover.mp3": "/Bitcoin/static/media/button-hover.72d377026c32d73b1c88.mp3",
+    "index.html": "/Bitcoin/index.html",
+    "main.702b59ed.css.map": "/Bitcoin/static/css/main.702b59ed.css.map",
+    "main.c02e25aa.js.map": "/Bitcoin/static/js/main.c02e25aa.js.map",
+    "453.334fc5ca.chunk.js.map": "/Bitcoin/static/js/453.334fc5ca.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.702b59ed.css",
+    "static/js/main.c02e25aa.js"
+  ]
+}
