@@ -28,7 +28,14 @@ function App() {
     const [year, month, day] = dateInput.split("-"); // Split input date into components
 
     try {
-      const dataReceived = await fetchFact(month, day); // Fetch facts using utility function
+      let count = 0;
+      let dataReceived = []
+
+      while(count < 3 || dataReceived.length == 0){
+        dataReceived = await fetchFact(month, day); // Fetch facts using utility function
+        count++;
+      }
+
       setData(dataReceived);
 
       // Apply the facts once data is successfully set
