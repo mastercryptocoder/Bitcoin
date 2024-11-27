@@ -29,13 +29,17 @@ function App() {
 
     try {
       let count = 0;
-      let dataReceived = []
-
+      let dataReceived = [];
       while(count < 3 && dataReceived.length < 1){
-        dataReceived = await fetchFact(month, day); // Fetch facts using utility function
-        count++;
+        try{
+            dataReceived = await fetchFact(month, day); // Fetch facts using utility function
+            count++;
+          }
+          catch(error){
+            console.error({error});
+          }
       }
-
+      
       setData(dataReceived);
 
       // Apply the facts once data is successfully set
