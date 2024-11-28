@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 import { fetchFact } from "./api/utils";
 import StarsLoop from "./StarsLoop.mp4"; // Background video
-import TestOverlay from "./TestOverlay.webm"; // Transition video
 import TimePortalGif from "./TimePortal.gif"; // Logo GIF
 import TwitterLogo from "./TwitterPng.png"; // Social media logos
 import PhotonLogo from "./PhotonPng.png";
@@ -93,7 +92,7 @@ function App() {
 
   function copyToClipboard() {
     navigator.clipboard.writeText("TOKEN ADDRESS");
-    alert("Copied to clipboard! \nTOKEN ADDRESS ");
+    alert("Copied to clipboard!");
   }
 
   function playHoverSound() {
