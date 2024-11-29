@@ -1,25 +1,27 @@
 {
   "files": {
-    "main.css": "/Bitcoin/static/css/main.702b59ed.css",
-    "main.js": "/Bitcoin/static/js/main.a795634d.js",
-    "static/js/453.334fc5ca.chunk.js": "/Bitcoin/static/js/453.334fc5ca.chunk.js",
-    "static/media/TestOverlay.webm": "/Bitcoin/static/media/TestOverlay.e7c1387c1e63f45b7369.webm",
-    "static/media/LoadingCircle.mp4": "/Bitcoin/static/media/LoadingCircle.abcf932faa41528a20cc.mp4",
-    "static/media/StarsLoop.mp4": "/Bitcoin/static/media/StarsLoop.3513dfa9604abd2e8068.mp4",
-    "static/media/copytoken.gif": "/Bitcoin/static/media/copytoken.9f3c5088e97a9d669eb9.gif",
-    "static/media/TimePortal.gif": "/Bitcoin/static/media/TimePortal.f1db2cc34fc227e5ffd7.gif",
-    "static/media/timeportal-theme.mp3": "/Bitcoin/static/media/timeportal-theme.6513e1777aeb1c2c383c.mp3",
-    "static/media/PortalLogo.png": "/Bitcoin/static/media/PortalLogo.9c189119fd8931ab38df.png",
-    "static/media/PhotonPng.png": "/Bitcoin/static/media/PhotonPng.2e1d2d578b815c4e7a4c.png",
-    "static/media/TwitterPng.png": "/Bitcoin/static/media/TwitterPng.9eb6e0c77bed1befe331.png",
-    "static/media/button-hover.mp3": "/Bitcoin/static/media/button-hover.72d377026c32d73b1c88.mp3",
-    "index.html": "/Bitcoin/index.html",
-    "main.702b59ed.css.map": "/Bitcoin/static/css/main.702b59ed.css.map",
-    "main.a795634d.js.map": "/Bitcoin/static/js/main.a795634d.js.map",
-    "453.334fc5ca.chunk.js.map": "/Bitcoin/static/js/453.334fc5ca.chunk.js.map"
+    "main.css": "/static/css/main.1169a946.css",
+    "main.js": "/static/js/main.59496639.js",
+    "static/js/453.4ab2018e.chunk.js": "/static/js/453.4ab2018e.chunk.js",
+    "static/media/LoadingCircle.mp4": "/static/media/LoadingCircle.abcf932faa41528a20cc.mp4",
+    "static/media/StarsLoop.mp4": "/static/media/StarsLoop.3513dfa9604abd2e8068.mp4",
+    "static/media/copytoken.gif": "/static/media/copytoken.9f3c5088e97a9d669eb9.gif",
+    "static/media/TimePortal.gif": "/static/media/TimePortal.f1db2cc34fc227e5ffd7.gif",
+    "static/media/timeportal-theme.mp3": "/static/media/timeportal-theme.6513e1777aeb1c2c383c.mp3",
+    "static/media/PortalLogo.png": "/static/media/PortalLogo.9c189119fd8931ab38df.png",
+    "static/media/PhotonPng.png": "/static/media/PhotonPng.2e1d2d578b815c4e7a4c.png",
+    "static/media/VolumeOff.png": "/static/media/VolumeOff.ac8021b726c33c35cda1.png",
+    "static/media/TwitterPng.png": "/static/media/TwitterPng.9eb6e0c77bed1befe331.png",
+    "static/media/VolumeOn.png": "/static/media/VolumeOn.d2259391c1eff11f9382.png",
+    "static/media/rich-person.avif": "/static/media/rich-person.fb62dd866599a790cdc1.avif",
+    "static/media/button-hover.mp3": "/static/media/button-hover.72d377026c32d73b1c88.mp3",
+    "index.html": "/index.html",
+    "main.1169a946.css.map": "/static/css/main.1169a946.css.map",
+    "main.59496639.js.map": "/static/js/main.59496639.js.map",
+    "453.4ab2018e.chunk.js.map": "/static/js/453.4ab2018e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.702b59ed.css",
-    "static/js/main.a795634d.js"
+    "static/css/main.1169a946.css",
+    "static/js/main.59496639.js"
   ]
 }
