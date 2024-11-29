@@ -9,6 +9,9 @@ import LoadingCircle from "./LoadingCircle.mp4";
 import ButtonHoverSound from "./button-hover.mp3";
 import TimePortalTheme from "./timeportal-theme.mp3";
 import CopyToken from "./copytoken.gif";
+import VolumeOn from "./VolumeOn.png";
+import VolumeOff from "./VolumeOff.png";
+import RichPicture from "./rich-person.avif";
 
 function App() {
   const [dateInput, setDateInput] = useState(""); // State for date input
@@ -17,10 +20,11 @@ function App() {
   const [transitionActive, setTransitionActive] = useState(false); // State to control transition video visibility
   const [loadingVisible, setLoadingVisible] = useState(false); // State to control loading video visibility
   const [transitionTriggered, setTransitionTriggered] = useState(false); // State to prevent multiple triggers
-  const transitionRef = useRef(null); // Ref for transition video
   const [dateMessage, setDateMessage] = useState("Enter a significant date");
+  const [volumeButton, setVolumeOnButton] = useState(true);
   const audioRef = useRef(null);
   const hoverAudioRef = useRef(null); // Ref for hover sound
+  const [isFadingOut, setIsFadingOut] = useState(false); // To track fade-out
 
   async function fetchFact(month, day, retries = 3, delay = 1000) {
     const url = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
@@ -34,12 +38,12 @@ function App() {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
         }
-  
+
         // If the response is OK, parse and return the data
         return await response.json();
       } catch (error) {
         console.error(`Attempt ${attempt} failed: ${error.message}`);
-  
+
         if (attempt < retries) {
           // Wait for a specified delay before retrying
           await new Promise((resolve) => setTimeout(resolve, delay));
@@ -71,10 +75,13 @@ function App() {
   }
 
   async function applyFact(dataReceived, year) {
+    setIsFadingOut(true); // Trigger fade-out
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for fade-out animation
+    setIsFadingOut(false);
+  
     const categories = ["selected", "events", "holidays", "deaths", "births"];
     let allFacts = [];
-
-    // Combine all categories of facts into a single array
+  
     categories.forEach((category) => {
       if (dataReceived[category] && dataReceived[category].length > 0) {
         allFacts = allFacts.concat(
@@ -82,20 +89,19 @@ function App() {
         );
       }
     });
-
-    // Filter facts to match the specified year
+  
     const factsForYear = allFacts.filter(
       (fact) => fact.year && parseInt(fact.year) === parseInt(year)
     );
-
+  
     if (factsForYear.length > 0) {
-      setFacts(factsForYear); // Set filtered facts
+      setFacts(factsForYear); // Update facts after fade-out
       setDateMessage("Enter a significant date");
     } else {
-      setDateMessage("No significant events found"); // Show message if no facts found
+      setDateMessage("No significant events found");
       setFacts([]);
     }
-
+  
     setLoadingVisible(false);
     setTransitionTriggered(false);
   }
@@ -106,11 +112,36 @@ function App() {
       setFacts([]); // Clear facts
       return;
     }
+  
+    const currentDate = new Date();
+    const inputDate = new Date(dateInput);
+  
+    if (inputDate > currentDate) {
+      // Check if the date is in the future
+      setDateMessage("Enter a significant date");
+      setFacts([
+        {
+          text: "You get rich from buying TimePortal.",
+          category: "future",
+          pages: [
+            {
+              originalimage: {
+                source: RichPicture, // Placeholder image or your custom image URL
+              },
+            },
+          ],
+        },
+      ]);
+      setLoadingVisible(false); // Hide loading if it was visible
+      return;
+    }
+  
     setLoadingVisible(true); // Show loading video
-
+  
     // Await the generateFact function to ensure it completes before proceeding
     await generateFact();
   }
+  
 
   function copyToClipboard() {
     navigator.clipboard.writeText("TOKEN ADDRESS");
@@ -126,7 +157,16 @@ function App() {
     }
   }
 
-
+  function toggleVolumeButton() {
+    if (audioRef.current) {
+      if (volumeButton) {
+        audioRef.current.muted = true; // Mute the audio
+      } else {
+        audioRef.current.muted = false; // Unmute the audio
+      }
+    }
+    setVolumeOnButton(!volumeButton); // Toggle the volume state
+  }
 
   useEffect(() => {
     if (audioRef.current) {
@@ -152,15 +192,6 @@ function App() {
         Your browser does not support the audio element.
       </audio>
 
-      <img id="copytoken" src={CopyToken} />
-      <div id="coinLogo">
-        <img
-          src={PortalLogo}
-          alt="Spinning Coin Logo"
-          onClick={copyToClipboard}
-        />
-      </div>
-
       {/* Background Video */}
       <video
         id="backgroundVideo"
@@ -179,6 +210,22 @@ function App() {
         id="main-content"
         className="relative flex flex-col items-center min-h-screen text-center"
       >
+        <img
+          id="volume-button"
+          src={volumeButton ? VolumeOn : VolumeOff}
+          alt="volume button"
+          onClick={toggleVolumeButton}
+        />
+
+        <img id="copytoken" src={CopyToken} />
+        <div id="coinLogo">
+          <img
+            src={PortalLogo}
+            alt="Spinning Coin Logo"
+            onClick={copyToClipboard}
+          />
+        </div>
+
         <img
           src={TimePortalGif}
           alt="Time Portal Logo"
@@ -248,16 +295,20 @@ function App() {
 
         {/* Facts Output */}
         {facts.length > 0 && (
-          <div className="w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6 output">
+          <div
+            className={`w-10/12 bg-gray-800 bg-opacity-50 rounded-lg shadow-lg p-6 output ${
+              isFadingOut ? "fade-out" : "fade-in"
+            }`}
+          >
             {facts
-              .filter((fact) => fact?.pages?.[0]?.originalimage?.source) // Only include facts with an image
+              .filter((fact) => fact?.pages?.[0]?.originalimage?.source)
               .map((fact, index) => (
                 <div
                   key={index}
-                  className="fact-item bg-gray-700 bg-opacity-60 text-white p-4 rounded-lg mb-6"
+                  className={`fact-item bg-gray-700 bg-opacity-60 text-white p-6 rounded-lg mb-6 fade-in-facts`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="fact-text mb-4">
-                    {/* Conditionally add "was born" or "died" */}
                     {fact.category === "births"
                       ? `${fact.text} was born`
                       : fact.category === "deaths"
@@ -265,7 +316,6 @@ function App() {
                       : fact.text}
                   </div>
                   <div>
-                    {/* Fact Image */}
                     {fact.pages[0].originalimage.source && (
                       <img
                         src={fact.pages[0].originalimage.source}
