@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
-import { fetchFact } from "./api/utils";
 import StarsLoop from "./StarsLoop.mp4"; // Background video
 import TimePortalGif from "./TimePortal.gif"; // Logo GIF
 import TwitterLogo from "./TwitterPng.png"; // Social media logos
@@ -23,27 +22,51 @@ function App() {
   const audioRef = useRef(null);
   const hoverAudioRef = useRef(null); // Ref for hover sound
 
+  async function fetchFact(month, day, retries = 3, delay = 1000) {
+    const url = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          if (response.status === 500) {
+            throw new Error("Server error");
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        }
+  
+        // If the response is OK, parse and return the data
+        return await response.json();
+      } catch (error) {
+        console.error(`Attempt ${attempt} failed: ${error.message}`);
+  
+        if (attempt < retries) {
+          // Wait for a specified delay before retrying
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        } else {
+          // Rethrow the error if all retries fail
+          throw error;
+        }
+      }
+    }
+  }
+
   async function generateFact() {
-    const [year, month, day] = dateInput.split("-"); // Split input date into components
-
+    const [year, month, day] = dateInput.split("-");
     try {
-      const dataReceived = await fetchFact(month, day); // Fetch facts using utility function
+      const dataReceived = await fetchFact(month, day); // Updated fetchFact with retry logic
       setData(dataReceived);
-
-      // Apply the facts once data is successfully set
       await applyFact(dataReceived, year);
     } catch (error) {
-      if (error.message.includes("500")) {
-        // Specific handling for 500 server error
-        setDateMessage("Server error, please try again");
+      if (error.message === "Server error") {
+        setDateMessage("Server error, please try again later.");
       } else {
-        // Handle other errors
-        setDateMessage("An unexpected error occurred, please try again");
+        setDateMessage("An unexpected error occurred, please try again.");
       }
       console.error(error);
     } finally {
-      setLoadingVisible(false); // Ensure loading is hidden after attempt
-      setTransitionTriggered(false); // Allow further attempts
+      setLoadingVisible(false);
+      setTransitionTriggered(false);
     }
   }
 
@@ -68,7 +91,6 @@ function App() {
     if (factsForYear.length > 0) {
       setFacts(factsForYear); // Set filtered facts
       setDateMessage("Enter a significant date");
-      console.log(factsForYear);
     } else {
       setDateMessage("No significant events found"); // Show message if no facts found
       setFacts([]);
@@ -103,6 +125,8 @@ function App() {
       });
     }
   }
+
+
 
   useEffect(() => {
     if (audioRef.current) {
