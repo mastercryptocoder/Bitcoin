@@ -25,7 +25,7 @@ function App() {
   const audioRef = useRef(null);
   const hoverAudioRef = useRef(null); // Ref for hover sound
   const [isFadingOut, setIsFadingOut] = useState(false); // To track fade-out
-  const TokenAddress = "TokenUploadedOnLaunch"
+  const TokenAddress = "D3cDjix6ujg7r4fGxKgEFjYLHJpmDugLhj1xJkJspump"
 
   async function fetchFact(month, day, retries = 3, delay = 1000) {
     const url = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
