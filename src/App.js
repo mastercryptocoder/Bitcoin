@@ -25,6 +25,7 @@ function App() {
   const audioRef = useRef(null);
   const hoverAudioRef = useRef(null); // Ref for hover sound
   const [isFadingOut, setIsFadingOut] = useState(false); // To track fade-out
+  const TokenAddress = "TestinToken"
 
   async function fetchFact(month, day, retries = 3, delay = 1000) {
     const url = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
@@ -142,9 +143,8 @@ function App() {
     await generateFact();
   }
   
-
   function copyToClipboard() {
-    navigator.clipboard.writeText("TOKEN ADDRESS");
+    navigator.clipboard.writeText(TokenAddress);
     alert("Copied to clipboard!");
   }
 
