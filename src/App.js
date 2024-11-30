@@ -14,7 +14,7 @@ import VolumeOff from "./VolumeOff.png";
 import RichPicture from "./rich-person.avif";
 
 function App() {
-  const [dateInput, setDateInput] = useState(""); // State for date input
+  const [dateInput, setDateInput] = useState(""); // State for date input.
   const [data, setData] = useState([]); // State for date input
   const [facts, setFacts] = useState([]); // State to hold fetched facts
   const [transitionActive, setTransitionActive] = useState(false); // State to control transition video visibility
