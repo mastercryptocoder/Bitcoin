@@ -210,12 +210,12 @@ function App() {
         id="main-content"
         className="relative flex flex-col items-center min-h-screen text-center"
       >
-        <img
+        {/* <img
           id="volume-button"
           src={volumeButton ? VolumeOn : VolumeOff}
           alt="volume button"
           onClick={toggleVolumeButton}
-        />
+        /> */}
 
         <img id="copytoken" src={CopyToken} />
         <div id="coinLogo">
@@ -223,6 +223,7 @@ function App() {
             src={PortalLogo}
             alt="Spinning Coin Logo"
             onClick={copyToClipboard}
+            onMouseEnter={playHoverSound} // Play hover sound
           />
         </div>
 
