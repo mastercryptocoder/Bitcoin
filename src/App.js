@@ -12,6 +12,7 @@ import CopyToken from "./copytoken.gif";
 import VolumeOn from "./VolumeOn.png";
 import VolumeOff from "./VolumeOff.png";
 import RichPicture from "./rich-person.avif";
+import CNAME from './CNAME.txt';
 
 function App() {
   const [dateInput, setDateInput] = useState(""); // State for date input
