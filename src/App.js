@@ -25,7 +25,7 @@ function App() {
   const audioRef = useRef(null);
   const hoverAudioRef = useRef(null); // Ref for hover sound
   const [isFadingOut, setIsFadingOut] = useState(false); // To track fade-out
-  const TokenAddress = "D3cDjix6ujg7r4fGxKgEFjYLHJpmDugLhj1xJkJspump"
+  const TokenAddress = ""
 
   async function fetchFact(month, day, retries = 3, delay = 1000) {
     const url = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/${month}/${day}`;
@@ -248,7 +248,8 @@ function App() {
               onMouseEnter={playHoverSound} // Play hover sound
             />
           </a>
-          <a
+          
+          {/* <a
             href="https://photon-sol.tinyastro.io/"
             target="_blank"
             rel="noopener noreferrer"
@@ -260,7 +261,7 @@ function App() {
               className="w-12 h-12"
               onMouseEnter={playHoverSound} // Play hover sound
             />
-          </a>
+          </a> */}
         </div>
 
         <p className="text-4xl text-gray-100 mb-6">{dateMessage}</p>
