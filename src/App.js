@@ -249,7 +249,7 @@ function App() {
             />
           </a>
           
-          <a
+          {/* <a
             href="https://photon-sol.tinyastro.io/"
             target="_blank"
             rel="noopener noreferrer"
@@ -261,7 +261,7 @@ function App() {
               className="w-12 h-12"
               onMouseEnter={playHoverSound} // Play hover sound
             />
-          </a>
+          </a> */}
         </div>
 
         <p className="text-4xl text-gray-100 mb-6">{dateMessage}</p>

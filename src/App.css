@@ -285,6 +285,11 @@ input {
   outline: none;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Inverts the color to match light themes */
+  color: white; /* Ensures white color in modern browsers */
+}
+
 button {
   background: linear-gradient(135deg, #0078d7, #005cbf);
   color: white;
